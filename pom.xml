@@ -6,7 +6,7 @@
 
 	<groupId>es.um.dis.tecnomod</groupId>
 	<artifactId>huron-ws</artifactId>
-	<version>1.0.8</version>
+	<version>1.0.9</version>
 	<packaging>war</packaging>
 
 	<parent>
@@ -18,41 +18,11 @@
 	<properties>
 		<java.version>${maven.compiler.release}</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<owlapi.version>5.1.10</owlapi.version>
-		<huron.version>0.0.12</huron.version>
+		<huron-lib.version>1.0.0</huron-lib.version>
 	</properties>
 
 
 	<dependencies>
-<!--		<dependency>-->
-<!--			<groupId>com.fasterxml.jackson.core</groupId>-->
-<!--			<artifactId>jackson-core</artifactId>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>com.fasterxml.jackson.core</groupId>-->
-<!--			<artifactId>jackson-databind</artifactId>-->
-<!--		</dependency>-->
-		<dependency>
-			<groupId>net.sourceforge.owlapi</groupId>
-			<artifactId>owlapi-distribution</artifactId>
-			<version>${owlapi.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-annotations</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-databind</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
@@ -60,8 +30,8 @@
 
 		<dependency>
 			<groupId>es.um.dis.tecnomod</groupId>
-			<artifactId>huron</artifactId>
-			<version>${huron.version}</version>
+			<artifactId>huron-lib</artifactId>
+			<version>${huron-lib.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
@@ -195,8 +165,7 @@
 			</activation>
 			<properties>
 				<profile.name>localjava13</profile.name>
-				<pom.analysis.r.script.path>
-					/home/fabad/Proyectos_R/evaluome_script.R</pom.analysis.r.script.path>
+				<pom.analysis.r.script.path>/home/fabad/Proyectos_R/evaluome_script.R</pom.analysis.r.script.path>
 				<maven.compiler.release>13</maven.compiler.release>
 			</properties>
 		</profile>
@@ -207,8 +176,7 @@
 			</activation>
 			<properties>
 				<profile.name>tomcatjava13</profile.name>
-				<pom.analysis.r.script.path>
-					/home/swit/r_scripts/evaluome_script_ontology_metrics_fran.R</pom.analysis.r.script.path>
+				<pom.analysis.r.script.path>/home/swit/r_scripts/evaluome_script_ontology_metrics_fran.R</pom.analysis.r.script.path>
 				<maven.compiler.release>13</maven.compiler.release>
 			</properties>
 		</profile>
@@ -219,8 +187,7 @@
 			</activation>
 			<properties>
 				<profile.name>localjava8</profile.name>
-				<pom.analysis.r.script.path>
-					/home/fabad/Proyectos_R/evaluome_script.R</pom.analysis.r.script.path>
+				<pom.analysis.r.script.path>/home/fabad/Proyectos_R/evaluome_script.R</pom.analysis.r.script.path>
 				<maven.compiler.release>8</maven.compiler.release>
 			</properties>
 		</profile>
@@ -231,8 +198,7 @@
 			</activation>
 			<properties>
 				<profile.name>tomcatjava8</profile.name>
-				<pom.analysis.r.script.path>
-					/home/swit/r_scripts/evaluome_script_ontology_metrics_fran.R</pom.analysis.r.script.path>
+				<pom.analysis.r.script.path>/home/swit/r_scripts/evaluome_script_ontology_metrics_fran.R</pom.analysis.r.script.path>
 				<maven.compiler.release>8</maven.compiler.release>
 			</properties>
 		</profile>
@@ -243,8 +209,7 @@
 			</activation>
 			<properties>
 				<profile.name>localjava17</profile.name>
-				<pom.analysis.r.script.path>
-					/home/fabad/Proyectos_R/evaluome_script.R</pom.analysis.r.script.path>
+				<pom.analysis.r.script.path>/home/fabad/Proyectos_R/evaluome_script.R</pom.analysis.r.script.path>
 				<maven.compiler.release>17</maven.compiler.release>
 			</properties>
 		</profile>
