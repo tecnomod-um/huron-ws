@@ -7,9 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.parameters.Imports;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import es.um.dis.tecnomod.huron.main.Config;
 import es.um.dis.tecnomod.huron.result_model.SummaryRDFResultModel;
 import es.um.dis.tecnomod.huron.tasks.MetricCalculationTask;
+import es.um.dis.tecnomod.huron.utils.PropertiesFileParser;
 import es.um.dis.tecnomod.huron.ws.dto.input.CalculateMetricsInputDTO;
 import es.um.dis.tecnomod.huron.ws.dto.input.OntologyInputDTO;
 
@@ -44,10 +47,14 @@ public class CalculateMetricsServiceRDFImpl extends CalculateMetricsService {
 		LOGGER.log(Level.INFO, "Tasks finished");
 		return outputFile;
 	}
-	
+
 	private Config createConfig(CalculateMetricsInputDTO input, File outputFile) {
 		Config config = new Config();
 		config.setImports(Imports.fromBoolean(input.isIncludeImports()));
+		if(input.getCustomPropertiesJSONContent() != null && !input.getCustomPropertiesJSONContent().trim().isEmpty()) {
+			Map<String, List<IRI>> propertiesByTopicToUse = PropertiesFileParser.parse(input.getCustomPropertiesJSONContent());
+			config.setPropertiesByTopic(propertiesByTopicToUse);
+		}
 		config.addResultModel(new SummaryRDFResultModel(outputFile));
 		return config;
 	}
@@ -61,5 +68,5 @@ public class CalculateMetricsServiceRDFImpl extends CalculateMetricsService {
 			tasks.add(new MetricCalculationTask(this.getMetricsToApply(input.getMetrics(), config), ontologyFile));
 		}
 		return tasks;
-	}	
+	}
 }

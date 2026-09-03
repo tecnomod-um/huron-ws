@@ -12,24 +12,27 @@ public class CalculateMetricsInputDTO implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7752142537553124585L;
-	
+
 	/** The ontologies. */
 	private List<OntologyInputDTO> ontologies;
-	
+
 	/** The email. */
 	private String email;
-	
+
 	/** The metrics. */
 	private List<String> metrics;
-	
+
 	/** The perform analysis. */
 	private boolean performAnalysis;
-	
+
 	/**  Consider imports?. */
 	private boolean includeImports;
-	
+
 	/**  Output format (wide_table, long_table, or rdf). */
 	private String outputFormat;
+
+	/** Custom properties describing names, synonyms and descriptions to use in JSON format. */
+	private String customPropertiesJSONContent;
 
 	/**
 	 * Gets the ontologies.
@@ -140,13 +143,32 @@ public class CalculateMetricsInputDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the custom properties JSON content.
+	 *
+	 * @return the custom properties JSON content
+	 */
+	public String getCustomPropertiesJSONContent() {
+		return customPropertiesJSONContent;
+	}
+
+	/**
+	 * Sets the custom properties JSON content.
+	 *
+	 * @param customPropertiesJSONContent the new custom properties JSON content
+	 */
+	public void setCustomPropertiesJSONContent(String customPropertiesJSONContent) {
+		this.customPropertiesJSONContent = customPropertiesJSONContent;
+	}
+
+	/**
 	 * Hash code.
 	 *
 	 * @return the int
 	 */
 	@Override
 	public int hashCode() {
-		return Objects.hash(email, includeImports, metrics, ontologies, outputFormat, performAnalysis);
+		return Objects.hash(customPropertiesJSONContent, email, includeImports, metrics, ontologies, outputFormat,
+				performAnalysis);
 	}
 
 	/**
@@ -164,7 +186,8 @@ public class CalculateMetricsInputDTO implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		CalculateMetricsInputDTO other = (CalculateMetricsInputDTO) obj;
-		return Objects.equals(email, other.email) && includeImports == other.includeImports
+		return Objects.equals(customPropertiesJSONContent, other.customPropertiesJSONContent)
+				&& Objects.equals(email, other.email) && includeImports == other.includeImports
 				&& Objects.equals(metrics, other.metrics) && Objects.equals(ontologies, other.ontologies)
 				&& Objects.equals(outputFormat, other.outputFormat) && performAnalysis == other.performAnalysis;
 	}
@@ -189,8 +212,12 @@ public class CalculateMetricsInputDTO implements Serializable {
 		builder.append(includeImports);
 		builder.append(", outputFormat=");
 		builder.append(outputFormat);
+		builder.append(", customPropertiesJSONContent=");
+		builder.append(customPropertiesJSONContent);
 		builder.append("]");
 		return builder.toString();
 	}
+
+
 
 }

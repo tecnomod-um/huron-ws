@@ -7,9 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.parameters.Imports;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import es.um.dis.tecnomod.huron.result_model.LongTSVResultModel;
 import es.um.dis.tecnomod.huron.result_model.SummaryRDFResultModel;
 import es.um.dis.tecnomod.huron.result_model.WideTSVResultModel;
 import es.um.dis.tecnomod.huron.tasks.MetricCalculationTask;
+import es.um.dis.tecnomod.huron.utils.PropertiesFileParser;
 import es.um.dis.tecnomod.huron.ws.dto.input.CalculateMetricsInputDTO;
 import es.um.dis.tecnomod.huron.ws.dto.input.OntologyInputDTO;
 
@@ -53,7 +56,12 @@ public class CalculateMetricsServiceImpl extends CalculateMetricsService {
 	private Config createConfig(CalculateMetricsInputDTO input, File outputFile, Path workingPath) {
 		Config config = new Config();
 		config.setImports(Imports.fromBoolean(input.isIncludeImports()));
-		
+
+		if(input.getCustomPropertiesJSONContent() != null && !input.getCustomPropertiesJSONContent().trim().isEmpty()) {
+			Map<String, List<IRI>> propertiesByTopicToUse = PropertiesFileParser.parse(input.getCustomPropertiesJSONContent());
+			config.setPropertiesByTopic(propertiesByTopicToUse);
+		}
+
 		if (OutputFileFormats.LONG_TABLE_OUTPUT_FORMAT.equals(input.getOutputFormat())) {
 			config.addResultModel(new LongTSVResultModel(outputFile));
 		} else if (OutputFileFormats.WIDE_TABLE_OUTPUT_FORMAT.equals(input.getOutputFormat())) {
@@ -65,7 +73,7 @@ public class CalculateMetricsServiceImpl extends CalculateMetricsService {
 		} else {
 			throw new IllegalArgumentException(String.format("Output format %s not recognised.", input.getOutputFormat()));
 		}
-		
+
 		/* R script needs a long table as input to perform analysis. Include it in the results if needed */
 		if (input.isPerformAnalysis() && !OutputFileFormats.LONG_TABLE_OUTPUT_FORMAT.equals(input.getOutputFormat())) {
 			File longTableFile = new File(workingPath.toFile(), "metrics_long.tsv");
@@ -73,7 +81,7 @@ public class CalculateMetricsServiceImpl extends CalculateMetricsService {
 		}
 		return config;
 	}
-	
+
 	private File getOutputMetricsFile (Path workingPath, CalculateMetricsInputDTO calculateMetricsInputDTO) {
 		File outputFile;
 		if (OutputFileFormats.LONG_TABLE_OUTPUT_FORMAT.equals(calculateMetricsInputDTO.getOutputFormat())) {
@@ -102,5 +110,5 @@ public class CalculateMetricsServiceImpl extends CalculateMetricsService {
 	}
 
 
-	
+
 }
