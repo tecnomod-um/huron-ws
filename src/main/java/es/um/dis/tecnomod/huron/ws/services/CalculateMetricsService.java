@@ -24,6 +24,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import es.um.dis.tecnomod.huron.main.Config;
+import es.um.dis.tecnomod.huron.main.Prefixes;
 import es.um.dis.tecnomod.huron.metrics.Metric;
 import es.um.dis.tecnomod.huron.result_model.ResultModelInterface;
 import es.um.dis.tecnomod.huron.services.OntologyUtils;
@@ -32,19 +33,18 @@ import es.um.dis.tecnomod.huron.tasks.MetricCalculationTaskResult;
 import es.um.dis.tecnomod.huron.ws.dto.input.CalculateMetricsInputDTO;
 import es.um.dis.tecnomod.huron.ws.dto.output.MetricDescriptionDTO;
 import es.um.dis.tecnomod.huron.ws.dto.output.MetricDescriptionListDTO;
-import es.um.dis.tecnomod.oquo.utils.Namespaces;
 
 /**
  * The Interface CalculateMetricsService.
  */
 public abstract class CalculateMetricsService {
 	private final static Logger LOGGER = Logger.getLogger(CalculateMetricsService.class.getName());
-	
+
 	private static final String METRICS_JAVA_PACKAGE = "es.um.dis.tecnomod.huron.metrics";
 	private static final String OQUO_HURON_IRI = "https://purl.org/oquo-huron";
 	private static final String IAO_DEFINITION = "http://purl.obolibrary.org/obo/IAO_0000115";
 	private static final String CROP_ACRONYM = "http://www.cropontology.org/rdf/acronym";
-	
+
 	/**
 	 * Calculate metrics.
 	 *
@@ -52,13 +52,13 @@ public abstract class CalculateMetricsService {
 	 * @return the file
 	 * @throws IOException
 	 * @throws InterruptedException
-	 * @throws OWLOntologyCreationException 
+	 * @throws OWLOntologyCreationException
 	 */
 	public abstract File calculateMetrics(CalculateMetricsInputDTO input) throws IOException, InterruptedException, OWLOntologyCreationException;
 
 	/**
 	 * Get a list of metric available to be calculated.
-	 * 
+	 *
 	 * @return A list of metrics
 	 */
 	public MetricDescriptionListDTO getAvailableMetrics() throws OWLOntologyCreationException {
@@ -70,7 +70,8 @@ public abstract class CalculateMetricsService {
 			if (Modifier.isAbstract(c.getModifiers())) {
 				continue;
 			}
-			String metricIRI = Namespaces.OQUO_NS + c.getSimpleName();
+
+			String metricIRI = Prefixes.OQUO_HURON_NS + c.getSimpleName();
 			if (oquo.containsClassInSignature(IRI.create(metricIRI))) {
 				metricDescriptionList.getMetricDescriptionList().add(this.createMetricDescriptionDTO(metricIRI, oquo));
 			}
@@ -84,25 +85,25 @@ public abstract class CalculateMetricsService {
 		if (!labels.isEmpty()) {
 			name = labels.get(0);
 		}
-		
+
 		String acronym = "";
 		List<String> acronyms = OntologyUtils.getAnnotationValues(IRI.create(metricIRI), IRI.create(CROP_ACRONYM), oquo, false);
 		if (!acronyms.isEmpty()) {
 			acronym = acronyms.get(0);
 		}
-		
+
 		String longDescription = "";
 		List<String> longDescriptions = OntologyUtils.getAnnotationValues(IRI.create(metricIRI), IRI.create(IAO_DEFINITION), oquo, false);
 		if (!longDescriptions.isEmpty()) {
 			longDescription = longDescriptions.get(0);
 		}
-		
+
 		String shortDescription = "";
 		List<String> shortDescriptions = OntologyUtils.getAnnotationValues(IRI.create(metricIRI), IRI.create(RDFS.COMMENT.stringValue()), oquo, false);
 		if (!shortDescriptions.isEmpty()) {
 			shortDescription = shortDescriptions.get(0);
 		}
-		
+
 		MetricDescriptionDTO metricDescriptionDTO = new MetricDescriptionDTO(metricIRI, name, acronym, shortDescription, longDescription);
 		return metricDescriptionDTO;
 	}
@@ -153,7 +154,7 @@ public abstract class CalculateMetricsService {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Execute with task executor.
 	 *
@@ -176,13 +177,13 @@ public abstract class CalculateMetricsService {
 		}
 		executor.shutdown();
 		executor.awaitTermination(1, TimeUnit.DAYS);
-		
+
 		/* Write results to files */
 		for(ResultModelInterface outputModel : config.getResultModels()) {
 			outputModel.export();
 		}
 	}
-	
+
 	private Set<Class <? extends Object>> findAllClassesUsingClassLoader(String packageName) {
 		Reflections reflections = new Reflections(packageName, new SubTypesScanner(false));
 		return reflections.getSubTypesOf(Object.class);
