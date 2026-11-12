@@ -6,7 +6,7 @@
 
 	<groupId>es.um.dis.tecnomod</groupId>
 	<artifactId>huron-ws</artifactId>
-	<version>1.0.10</version>
+	<version>1.0.11</version>
 	<packaging>war</packaging>
 
 	<parent>
@@ -18,7 +18,7 @@
 	<properties>
 		<java.version>${maven.compiler.release}</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<huron-lib.version>1.0.1</huron-lib.version>
+		<huron-lib.version>1.0.2</huron-lib.version>
 	</properties>
 
 
